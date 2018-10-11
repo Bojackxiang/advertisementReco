@@ -26,11 +26,16 @@ size = pd.DataFrame(size)
 install = category_data.iloc[:, 5:6].values
 preprocess_install = install_to_numeric(install)
 
-X = pd.concat([rate, reviews, size, preprocess_install], axis=1).values
+X = pd.concat([rate, reviews, size], axis=1).values
 imputer_rate = Imputer(missing_values="NaN", strategy="mean", axis=0)
-imputer_rate = imputer_rate.fit(X[:, 0:1])
-new_rate = imputer_rate.transform(X[:, 0:1])
-X[:, 0:1] = new_rate
+imputer_rate = imputer_rate.fit(X[:, 0:4])
+new_rate = imputer_rate.transform(X[:, 0:4])
+X[:, 0:4] = new_rate
+
+y = preprocess_install
+
+# * 到目前为止，数据预处理里已经完成，x，y，
+
 
 
 
