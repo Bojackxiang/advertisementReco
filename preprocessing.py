@@ -26,6 +26,7 @@ size = pd.DataFrame(size)
 install = category_data.iloc[:, 5:6].values
 preprocess_install = install_to_numeric(install)
 
+# ! 构建 X, y
 X = pd.concat([rate, reviews, size], axis=1).values
 imputer_rate = Imputer(missing_values="NaN", strategy="mean", axis=0)
 imputer_rate = imputer_rate.fit(X[:, 0:4])
