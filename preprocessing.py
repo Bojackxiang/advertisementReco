@@ -31,7 +31,9 @@ imputer_rate = Imputer(missing_values="NaN", strategy="mean", axis=0)
 imputer_rate = imputer_rate.fit(X[:, 0:4])
 new_rate = imputer_rate.transform(X[:, 0:4])
 X[:, 0:4] = new_rate
-
+X_dataframe = pd.DataFrame(X)
+print(type(X_dataframe))
+X_dataframe.to_csv('X.csv')
 y = preprocess_install
 
 # * 到目前为止，数据预处理里已经完成，x，y，
