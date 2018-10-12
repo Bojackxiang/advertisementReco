@@ -2,71 +2,54 @@ import numpy as np
 import pandas as pd  
 import pprint as pp
 from sklearn.preprocessing import Imputer
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+
+# import modules
 from controller import *
+
 
 picking_up_category = "Art & Design"
 dataset = pd.read_csv('./dataset.csv')
 category_data = dataset.loc[dataset['Genres'] == picking_up_category]
+
+# ! obtain the rating (success)
 rate = category_data.iloc[:, 2:3]
 
-# ! change the review to int
+# ! change the review to int (success)
 reviews = category_data.iloc[:, 3:4]
-reviews = reviews.astype(int) 
+reviews = reviews.astype(int)
 
-# ! cahnge the string to float number
-size = category_data.iloc[:, 4:5].values
-for ele in size:
-    if len(ele[0]) > 10:
-        ele[0] = float('nan')
-    else:
-        ele[0] = float(ele[0][:-1])
-size = pd.DataFrame(size)
+# ! cahnge the string to float number (success)
+size = category_data.iloc[:, 4:5]
+size['Size'] = size['Size'].astype(str).str[:-1]
+size['Size'] = size['Size'].replace({'Varies with devic': np.nan})
+size['Size'] = size['Size'].map(lambda x: float(x))
 
-# ! processing the install 
-install = category_data.iloc[:, 5:6].values
-preprocess_install = install_to_numeric(install)
+# ! processing the install (success)
+install = category_data.iloc[:, 5:6]
+install['Installs'] = install['Installs'].astype(str).str[:-1]
+install['Installs'] = install['Installs'].map(lambda x: int("".join(x.split(','))))
 
 # ! 构建 X, y
 X = pd.concat([rate, reviews, size], axis=1).values
+print(X)
+
 imputer_rate = Imputer(missing_values="NaN", strategy="mean", axis=0)
-imputer_rate = imputer_rate.fit(X[:, 0:4])
+imputer_rate = imputer_rate.fit(X[:, 0:3])
 new_rate = imputer_rate.transform(X[:, 0:4])
 X[:, 0:4] = new_rate
-X_dataframe = pd.DataFrame(X)
-print(type(X_dataframe))
-X_dataframe.to_csv('X.csv')
-y = preprocess_install
+y = install
 
-# * 到目前为止，数据预处理里已经完成，x，y，
+# ! 开始训练模型
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+pp.pprint(X_train)
+regression = LinearRegression()
+regression.fit(X_train, y_train)
+y_pred = regression.predict(X_test)       
+print(y_pred)
+print(y_test)
 
-
-
-
-
-
-
-
-
-# X = pd.concat([dataset.iloc[:, 2:3], dataset.iloc[:, 3:4], dataset.iloc[:, 4:5], )
-# imputer = Imputer(missing_values="nan", strategy="mean", axis=0)
-
-
-# imputer = imputer.fit(dataset[:, 2:3])
-# new_rating = imputer.tranform(dataset[:, 2:3])
-# print(new_rating)
-# preprocessed_data = pd.concat([dataset.iloc[:, 2:3], dataset.iloc[:, 3:4], dataset.iloc[:, 4:5], dataset.iloc[:, 8:9]], axis=1)
-
-
-# ! <class 'pandas.core.frame.DataFrame'>
-# pp.pprint(type(dataset.iloc[:, 2:3]))
-# ! <class 'numpy.ndarray'>
-# pp.pprint(type(useful_data.values))
-
-
-
-# print(type(number_list))
-# number_list.astype('int64')
-# print(type(number_list))
 
 
 
