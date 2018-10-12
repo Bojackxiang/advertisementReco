@@ -33,8 +33,6 @@ install['Installs'] = install['Installs'].map(lambda x: int("".join(x.split(',')
 
 # ! 构建 X, y
 X = pd.concat([rate, reviews, size], axis=1).values
-print(X)
-
 imputer_rate = Imputer(missing_values="NaN", strategy="mean", axis=0)
 imputer_rate = imputer_rate.fit(X[:, 0:3])
 new_rate = imputer_rate.transform(X[:, 0:4])
@@ -46,9 +44,10 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 pp.pprint(X_train)
 regression = LinearRegression()
 regression.fit(X_train, y_train)
-y_pred = regression.predict(X_test)       
-print(y_pred)
-print(y_test)
+y_pred = regression.predict(X_test)
+
+
+
 
 
 
