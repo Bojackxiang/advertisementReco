@@ -83,10 +83,6 @@ def findUniqueCate():
     generList = dataset.loc[:, 'Category'].unique()[:-1]
     return generList
     
-    
-    
-
-
 def main():
     dispose('MEDICAL')
 

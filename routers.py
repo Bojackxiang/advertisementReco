@@ -6,21 +6,20 @@ from flask_restplus import reqparse
 from flask_restplus import inputs
 from pymongo import *
 from preprocessing import dispose
+from preprocessing import predict
 from preprocessing import top10
-from preprocessing import findUniqueCate
+
 import json
-from flask_cors import CORS
-
 app = Flask(__name__)
-cors = CORS(app, resources={r"*": {"origins": "*"}})
 api = Api(app)
-
 MONGODB_URI = 'mongodb://watermelon:zoe123@ds129344.mlab.com:29344/ass3user'
 client = MongoClient(MONGODB_URI, connectTimeoutMS=30000)
 db = client.get_database('ass3user')
 user_db = db.user
 parser = reqparse.RequestParser()
 parser.add_argument('type',type = str)
+predict = reqparse.RequestParser()
+predict.add_argument('type',type = str)
 data_model = api.model('type',{
     "Genres": fields.String})
 @api.route('/register/<string:userName>/<string:password>')
@@ -64,28 +63,23 @@ class find(Resource):
         args = parser.parse_args()
         type1 = args.get('type')
         data = (top10(type1))
-        # print(type(data))
-        # data = json.dumps(data)
-        # print(type(data))
-        return data
+        
+        data = json.dumps(data)
+        return data,201
 
-@api.route('/catelist')
-class find(Resource):
+@api.route('/predict/<string:rating>/<string:size>/<string:review>/<string:category>')
+class predict(Resource):
     @api.response(201,'Found')
     @api.response(404,'Not Found')
-    
-    def get(self):
-        data = findUniqueCate()
-        dict_data = {}
-        for item in data:
-            dict_data[item] = 1
-        return dict_data
+    #@api.expect(parse)
+    def get(self,rating,size,review,category):
+        #print('eee')
+        args = parser.parse_args()
         
-        
-        # print(type(data))
-        # data = json.dumps(data)
-        # print(type(data))
-        
-
+        #print(type1)
+        predictdata = dispose(category,rating,size,review)
+        print((predictdata))
+        #print(type(predictdata))
+        return predictdata
 if __name__ == '__main__':
     app.run(debug=True)
