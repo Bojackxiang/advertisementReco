@@ -8,7 +8,7 @@ from sklearn.linear_model import LinearRegression
 # import modules
 from controller import *
 
-def dispose(Genres):
+def dispose(Genres,a,b,c):
     
     picking_up_category = Genres
     dataset = pd.read_csv('./dataset.csv')
@@ -51,9 +51,9 @@ def dispose(Genres):
     regression = LinearRegression()
     regression.fit(X_train, y_train)
     # pp.pprint(type(X_test))
-    my_test = np.array([[4, 7, 8]])
+    my_test = np.array([[float(a),float(b),float(c)]])
     y_pred = regression.predict(my_test)
-    
+    return y_pred[0][0]
     
 
 def top10(Genres):
@@ -83,11 +83,11 @@ def findUniqueCate():
     generList = dataset.loc[:, 'Category'].unique()[:-1]
     return generList
     
-def main():
-    dispose('MEDICAL')
+#def main():
+ #   dispose('MEDICAL')
 
-if __name__=='__main__':
-    main()
+#if __name__=='__main__':
+ #   main()
 
     
 
